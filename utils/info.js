@@ -89,6 +89,19 @@ export async function getProductInfo(pageOrFrame) {
             return el ? el.value.trim() : null;
         };
 
+        const getByNoun = (keywords) => {
+            const list = Array.isArray(keywords) ? keywords : [keywords];
+
+            const el = Array.from(document.querySelectorAll('input, textarea'))
+                .find(el => {
+                    const noun = el.getAttribute('noun') || "";
+                    return list.some(k => noun.includes(k));
+                });
+
+            return el ? el.value.trim() : null;
+        };
+
+
         const getAdditionalImages = () => {
             const images = [];
             for (let i = 6; i <= 18; i++) {
@@ -104,8 +117,8 @@ export async function getProductInfo(pageOrFrame) {
 
         return {
             productName: getValue('input[name="product_name"]'),
-            size: getValue('input[name="item_03"]'),
-            color: getValue('input[name="item_02"]'),
+            size: getByNoun(['치수', '크기', '크기, 중량', '중량', '사이즈']),
+            color: getByNoun('색상'),
             images: {
                 main: getValue('input[name="old_image_file"]'),
                 additional: getAdditionalImages(),
